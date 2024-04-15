@@ -120,4 +120,4 @@ def start_link_manager():
 class GlobalPlugin(globalPluginHandler.GlobalPlugin):
     @script(description='Abre la ventana del gestor de enlaces', gesture='kb:NVDA+alt+l', category='Gestor De Enlaces')
     def script_open_file(self, gesture):
-        start_link_manager()
+        wx.CallAfter(start_link_manager)
