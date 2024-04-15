@@ -4,16 +4,16 @@ import wx
 import webbrowser
 import json
 
-class LinkManager(wx.Frame):
-    def __init__(self, parent, title):
-        super(LinkManager, self).__init__(parent, title=title, size=(500, 400))
+class LinkManager(wx.Dialog):
+    def _init_(self, parent, title):
+        super(LinkManager, self)._init_(parent, title=title, size=(500, 400))
         self.panel = wx.Panel(self)
         self.vbox = wx.BoxSizer(wx.VERTICAL)
         self.panel.SetSizer(self.vbox)
 
         self.linkList = wx.ListCtrl(self.panel, style=wx.LC_REPORT)
         self.linkList.InsertColumn(0, 'Titulo', width=400)
-        self.urlDict = {}
+        self.links = {}
         self.loadLinks()
         self.vbox.Add(self.linkList, proportion=1, flag=wx.EXPAND)
 
@@ -24,52 +24,69 @@ class LinkManager(wx.Frame):
         self.txtTitle = wx.TextCtrl(self.addLinkPanel)
         lblUrl = wx.StaticText(self.addLinkPanel, label="URL:")
         self.txtUrl = wx.TextCtrl(self.addLinkPanel)
-        addBtn = wx.Button(self.addLinkPanel, label='Añadir Enlace')
-        addBtn.Bind(wx.EVT_BUTTON, self.addNewLink)
+        self.addBtn = wx.Button(self.addLinkPanel, label='Guardar Enlace')
+        self.addBtn.Bind(wx.EVT_BUTTON, self.onAddOrEditLink)
 
         addLinkBox.Add(lblTitle, flag=wx.RIGHT, border=5)
-        addLinkBox.Add(self.txtTitle, proportion=1, flag=wx.RIGHT, border=5)
+        addLinkBox.Add(self.txtTitle, proportion=1, flag=wx.EXPAND | wx.RIGHT, border=5)
         addLinkBox.Add(lblUrl, flag=wx.RIGHT, border=5)
-        addLinkBox.Add(self.txtUrl, proportion=1, flag=wx.RIGHT, border=5)
-        addLinkBox.Add(addBtn)
+        addLinkBox.Add(self.txtUrl, proportion=1, flag=wx.EXPAND | wx.RIGHT, border=5)
+        addLinkBox.Add(self.addBtn)
         self.addLinkPanel.SetSizer(addLinkBox)
         self.addLinkPanel.Hide()
 
-        self.vbox.Add(self.addLinkPanel, flag=wx.EXPAND|wx.TOP|wx.BOTTOM, border=10)
+        self.vbox.Add(self.addLinkPanel, flag=wx.EXPAND | wx.TOP | wx.BOTTOM, border=10)
 
         self.linkList.Bind(wx.EVT_LIST_ITEM_ACTIVATED, self.openLink)
         self.Bind(wx.EVT_CHAR_HOOK, self.onKeyPress)
+
+        self.editingIndex = None 
 
         self.Centre()
         self.Show()
 
     def loadLinks(self):
         self.linkList.DeleteAllItems()
-        self.urlDict.clear()
+        self.links.clear()
         try:
             with open('links.json', 'r') as file:
-                links = json.load(file)
-                for title, url in links.items():
-                    index = self.linkList.InsertItem(self.linkList.GetItemCount(), title)
-                    self.urlDict[index] = url
+                self.links = json.load(file)
+                for title, url in self.links.items():
+                    self.linkList.InsertItem(self.linkList.GetItemCount(), title)
         except (FileNotFoundError, json.JSONDecodeError):
             print("Archivo 'links.json' no encontrado o inválido. Se creará uno nuevo al añadir un enlace.")
             with open('links.json', 'w') as file:
                 json.dump({}, file)
 
-    def addNewLink(self, event):
+    def onAddOrEditLink(self, event):
         title = self.txtTitle.GetValue()
         url = self.txtUrl.GetValue()
-        if title and url:
-            index = self.linkList.InsertItem(self.linkList.GetItemCount(), title)
-            self.urlDict[index] = url
-            self.saveLinks()
-            wx.MessageBox('Enlace añadido', 'Info', wx.OK | wx.ICON_INFORMATION)
-            self.loadLinks()
+        if self.editingIndex is None:
+            if title and url and title not in self.links:
+                self.links[title] = url
+                self.saveLinks()
+                self.loadLinks()
+                wx.MessageBox('Enlace añadido', 'Info', wx.OK | wx.ICON_INFORMATION)
+            elif title in self.links:
+                wx.MessageBox('Un enlace con este título ya existe', 'Error', wx.OK | wx.ICON_ERROR)
+        else:
+            existing_title = self.linkList.GetItemText(self.editingIndex)
+            if title and url:
+                if title != existing_title and title in self.links:
+                    wx.MessageBox('Un enlace con este título ya existe', 'Error', wx.OK | wx.ICON_ERROR)
+                else:
+                    del self.links[existing_title]
+                    self.links[title] = url
+                    self.saveLinks()
+                    self.loadLinks()
+                    wx.MessageBox('Enlace actualizado', 'Info', wx.OK | wx.ICON_INFORMATION)
+            self.editingIndex = None
+            self.addLinkPanel.Hide()
+            self.panel.Layout()
 
     def openLink(self, event):
-        index = event.GetIndex()
-        url = self.urlDict.get(index)
+        title = self.linkList.GetItemText(event.GetIndex())
+        url = self.links.get(title)
         if url:
             webbrowser.open(url)
 
@@ -95,27 +112,32 @@ class LinkManager(wx.Frame):
         index = self.linkList.GetFirstSelected()
         if index != -1:
             title = self.linkList.GetItemText(index)
-            url = self.urlDict.get(index)
+            url = self.links.get(title)
             self.txtTitle.SetValue(title)
             self.txtUrl.SetValue(url)
-            self.saveLinks()
-            self.loadLinks()
+            self.editingIndex = index
+            if not self.addLinkPanel.IsShown():
+                self.addLinkPanel.Show()
+                self.panel.Layout()
+            self.txtTitle.SetFocus()
 
     def deleteLink(self):
         index = self.linkList.GetFirstSelected()
         if index != -1:
-            self.linkList.DeleteItem(index)
-            del self.urlDict[index]
-            self.saveLinks()
+            title = self.linkList.GetItemText(index)
+            if title in self.links:
+                del self.links[title]
+                self.saveLinks()
+                self.loadLinks()
 
     def saveLinks(self):
         with open('links.json', 'w') as file:
-            json.dump(self.urlDict, file)
+            json.dump(self.links, file)
 
 def start_link_manager():
-    app = wx.App(False)
     frame = LinkManager(None, 'Gestor de Enlaces')
-    app.MainLoop()
+    frame.Show()
+    frame.SetFocus()
 
 class GlobalPlugin(globalPluginHandler.GlobalPlugin):
     @script(description='Abre la ventana del gestor de enlaces', gesture='kb:NVDA+alt+l', category='Gestor De Enlaces')
