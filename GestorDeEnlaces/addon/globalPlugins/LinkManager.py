@@ -5,16 +5,19 @@ from scriptHandler import script
 import wx
 import webbrowser
 import json
+import gui
 
 class LinkManager(wx.Dialog):
     def __init__(self, parent, title):
         super(LinkManager, self).__init__(parent, title=title, size=(500, 400))
+        self.CenterOnScreen()
         self.panel = wx.Panel(self)
         self.vbox = wx.BoxSizer(wx.VERTICAL)
         self.panel.SetSizer(self.vbox)
 
         self.linkList = wx.ListCtrl(self.panel, style=wx.LC_REPORT)
         self.linkList.InsertColumn(0, 'Titulo', width=400)
+        self.linkList.SetFocus()
         self.links = {}
         self.loadLinks()
         self.vbox.Add(self.linkList, proportion=1, flag=wx.EXPAND)
@@ -142,7 +145,9 @@ class LinkManager(wx.Dialog):
             self.txtTitle.SetFocus()
 
 def start_link_manager():
-    frame = LinkManager(None,'Gestor de Enlaces')
+    gui.mainFrame.prePopup()
+    frame = LinkManager(gui.mainFrame,'Gestor de Enlaces')
+    gui.mainFrame.postPopup()
 
 class GlobalPlugin(globalPluginHandler.GlobalPlugin):
     @script(description='Abre la ventana del gestor de enlaces', gesture='kb:NVDA+alt+k', category='Gestor De Enlaces')
