@@ -33,7 +33,7 @@ Pequeño complemento para gestionar y guardar links de forma rápida
 	# URL for the add-on documentation support
 	"addon_url": None,
 	# URL for the add-on repository where the source code can be found
-	"addon_sourceURL": https://github.com/AAyoubelbakhti/Gestor-De-Enlaces-para-NVDA,
+	"addon_sourceURL": None,
 	# Documentation file name
 	"addon_docFileName": "readme.html",
 	# Minimum NVDA version supported (e.g. "2018.3.0", minor version is optional)
@@ -70,7 +70,7 @@ excludedFiles = []
 # Base language for the NVDA add-on
 # If your add-on is written in a language other than english, modify this variable.
 # For example, set baseLanguage to "es" if your add-on is primarily written in spanish.
-baseLanguage = "en"
+baseLanguage = "es"
 
 # Markdown extensions for add-on documentation
 # Most add-ons do not require additional Markdown extensions.
