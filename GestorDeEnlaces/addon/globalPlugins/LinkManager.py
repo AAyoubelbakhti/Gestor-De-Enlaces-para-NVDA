@@ -1,3 +1,9 @@
+#A part of NonVisual Desktop Access (NVDA)
+#This file is covered by the GNU General Public License.
+#See the file COPYING for more details.
+#Copyright (C) 2024 Ayoub El Bakhti
+
+
 import globalVars
 import os
 import globalPluginHandler
@@ -149,6 +155,12 @@ def start_link_manager():
     frame = LinkManager(gui.mainFrame,'Gestor de Enlaces')
     gui.mainFrame.postPopup()
 
+def disableInSecureMode(decoratedCls):
+    if globalVars.appArgs.secure:
+        return globalPluginHandler.GlobalPlugin;
+    return decoratedCls;
+
+@disableInSecureMode
 class GlobalPlugin(globalPluginHandler.GlobalPlugin):
     @script(description='Abre la ventana del gestor de enlaces', gesture='kb:NVDA+alt+k', category='Gestor De Enlaces')
     def script_open_file(self, gesture):

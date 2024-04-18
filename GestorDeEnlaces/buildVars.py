@@ -45,9 +45,11 @@ Pequeño complemento para gestionar y guardar links de forma rápida
 	# Do not change unless you know what you are doing!
 	"addon_updateChannel": None,
 	# Add-on license such as GPL 2
-	"addon_license": None,
+	"addon_license": "GPL 2",
+
 	# URL for the license document the ad-on is licensed under
-	"addon_licenseURL": None,
+	"addon_licenseURL": "https://www.gnu.org/licenses/old-licenses/gpl-2.0.html",
+
 }
 
 # Define the python files that are the sources of your add-on.
@@ -59,6 +61,7 @@ Pequeño complemento para gestionar y guardar links de forma rápida
 # For more information on SCons Glob expressions please take a look at:
 # https://scons.org/doc/production/HTML/scons-user/apd.html
 pythonSources = []
+
 
 # Files that contain strings for translation. Usually your python sources
 i18nSources = pythonSources + ["buildVars.py"]
