@@ -31,7 +31,7 @@ Pequeño complemento para gestionar y guardar links de forma rápida
 	# Author(s)
 	"addon_author": "Ayoub <ayoubelbak13@gmail.com>",
 	# URL for the add-on documentation support
-	"addon_url": None,
+	"addon_url": "https://github.com/AAyoubelbakhti/Gestor-De-Enlaces-para-NVDA",
 	# URL for the add-on repository where the source code can be found
 	"addon_sourceURL": "https://github.com/AAyoubelbakhti/Gestor-De-Enlaces-para-NVDA",
 	# Documentation file name
@@ -60,7 +60,7 @@ Pequeño complemento para gestionar y guardar links de forma rápida
 # pythonSources = ["addon/globalPlugins/*.py"]
 # For more information on SCons Glob expressions please take a look at:
 # https://scons.org/doc/production/HTML/scons-user/apd.html
-pythonSources = []
+pythonSources = ['addon/globalPlugins/LinkManager.py']
 
 
 # Files that contain strings for translation. Usually your python sources
