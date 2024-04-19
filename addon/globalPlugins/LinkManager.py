@@ -14,8 +14,14 @@ import webbrowser
 import json
 import gui
 import ui
+import api
 import addonHandler
-addonHandler.initTranslation()
+
+try:
+    addonHandler.initTranslation();
+except addonHandler.AddonError:
+    from logHandler import log;
+    log.warning('Unable to initialise translations. This may be because the addon is running from NVDA scratchpad.');
 
 
 def disableInSecureMode(decoratedCls):
@@ -41,7 +47,7 @@ class LinkManager(wx.Dialog):
 
         self.addLinkPanel = wx.Panel(self.panel)
         addLinkBox = wx.BoxSizer(wx.HORIZONTAL)
-#traductores: campo para el título del link.
+        #traductores: campo para el título del link.
         lblTitle = wx.StaticText(self.addLinkPanel, label=_("Título:"))
         self.txtTitle = wx.TextCtrl(self.addLinkPanel)
         #traductores: panel para la url.
@@ -170,6 +176,19 @@ class LinkManager(wx.Dialog):
                 self.panel.Layout()
             self.txtTitle.SetFocus()
 
+def saveLinkScript(title,url):
+    pathFile=os.path.join(globalVars.appArgs.configPath, "links.json")
+    data={}
+    try:
+        with open(pathFile,'r') as file:
+            data=json.load(file)
+    except FileNotFoundError:   
+        data={}
+    data[title]= url
+    with open(pathFile,'w') as file:
+        json.dump(data,file)
+
+
 def start_link_manager():
     gui.mainFrame.prePopup()
     frame = LinkManager(gui.mainFrame,'Gestor de Enlaces')
@@ -182,3 +201,12 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
         category=_("Gestor De Enlaces"))
     def script_open_file(self, gesture):
         wx.CallAfter(start_link_manager)
+
+    @script(description='Añade el enlace de la web enfocada al  gestor de enlaces', gesture='kb:NVDA+alt+shift+k', category='Gestor De Enlaces')
+    def script_GetUrl(self, gesture):
+        obj = api.getNavigatorObject()
+        root = obj.treeInterceptor.rootNVDAObject
+        url = root.IAccessibleObject.accValue(obj.IAccessibleChildID)
+        title = root.name
+        saveLinkScript(title, url)
+        ui.message(f'Se añadió {title} a la lista')
