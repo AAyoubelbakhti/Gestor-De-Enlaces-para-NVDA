@@ -3,6 +3,7 @@
 #See the file COPYING for more details.
 #Copyright (C) 2024 Ayoub El Bakhti
 
+#añadiremos la traducción  próximamente.
 
 import globalVars
 import os
