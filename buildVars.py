@@ -60,7 +60,7 @@ Pequeño complemento para gestionar y guardar links de forma rápida
 # pythonSources = ["addon/globalPlugins/*.py"]
 # For more information on SCons Glob expressions please take a look at:
 # https://scons.org/doc/production/HTML/scons-user/apd.html
-pythonSources = ['addon/globalPlugins/LinkManager.py]
+pythonSources = ['addon/globalPlugins/LinkManager.py']
 
 
 # Files that contain strings for translation. Usually your python sources
