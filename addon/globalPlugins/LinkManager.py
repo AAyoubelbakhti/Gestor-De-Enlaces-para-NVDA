@@ -108,6 +108,8 @@ class LinkManager(wx.Dialog):
                 #traductores: se anuncia que se añadió un enlace.
                 wx.MessageBox(_("Enlace añadido"), _("Info"), wx.OK | wx.ICON_INFORMATION)
                 self.loadLinks()
+                self.txtTitle.Clear()
+                self.txtUrl.Clear()
             elif title in self.links:
                 #Traductores: se informa que un enlace con ese título ya existe.
                 wx.MessageBox(_("Un enlace con este título ya existe"), 'Error', wx.OK | wx.ICON_ERROR)
@@ -123,6 +125,8 @@ class LinkManager(wx.Dialog):
                     self.saveLinks()
                     #Traductores: se informa que el enlace fue actualizado.
                     wx.MessageBox(_("Enlace actualizado"), _("Info"), wx.OK | wx.ICON_INFORMATION)
+                    self.txtTitle.Clear()
+                    self.txtUrl.Clear()
             self.editingIndex = None
             self.addLinkPanel.Hide()
             self.panel.Layout()
