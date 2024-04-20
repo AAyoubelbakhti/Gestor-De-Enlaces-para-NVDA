@@ -1,45 +1,47 @@
-# Gestor de Enlaces
+# Gestor de Enlaces para NVDA
 
-Este es un pequeño complemento que te permite guardar y abrir tus enlaces de forma rápida y sencilla con una interfaz simple.
+Este complemento para NVDA permite gestionar enlaces web de manera eficiente, permitiendo guardar, abrir, editar y eliminar enlaces a través de una interfaz sencilla y accesible que se despliega con el atajo de teclado alt + NVDA + K (modificable en gestos de entrada) bajo la categoría gestor de enlaces.
 
 ## Forma de uso
 
 ### Añadir un Nuevo Enlace
 
-Para añadir un nuevo enlace:
+Para añadir un nuevo enlace, sigue estos pasos:
 
-1. Pulsa `Ctrl + A` para abrir el panel de añadir enlaces.
-2. Introduce el título del enlace en el campo `Título`.
-3. Introduce la URL en el campo `URL`.
-4. Finalmente, pulsa el botón `Añadir Enlace` para guardar el enlace.
+1. Activa el panel de añadir enlaces con `Ctrl + A`.
+2. Escribe el título del enlace en el campo "Título".
+3. Escribe la URL en el campo "URL".
+4. Pulsa el botón "Guardar" para almacenar el enlace.
 
-**NOTA:** Si pulsas `Ctrl + A` nuevamente, ocultarás los campos para añadir enlaces.
+**Nota:** Al pulsar `Ctrl + A` cuando el panel está abierto, este se ocultará.
 
 ### Abrir un Enlace
 
-Para abrir un enlace, pulsa `entero espacio` sobre el título del enlace en la lista.
+Para abrir un enlace guardado:
+
+- Selecciona el título del enlace en la lista y presiona `Enter` o `Espacio` para abrirlo en tu navegador predeterminado.
 
 ### Editar y Borrar Enlaces
 
-Para editar o borrar un enlace:
+Para modificar o eliminar enlaces existentes:
 
-- Para editar un enlace, selecciona un enlace de la lista y pulsa `Ctrl + E`.
-- Para borrar un enlace, selecciona un enlace de la lista y pulsa `Ctrl + B`.
+- **Editar un Enlace**: Selecciona el enlace deseado de la lista y pulsa `Ctrl + E`.
+- **Borrar un Enlace**: Selecciona el enlace deseado de la lista y pulsa `Ctrl + B`.
 
 ## Gestión de los Enlaces
 
-El complemento guarda los enlaces en un archivo llamado `links.json`. Si el archivo no existe, se creará uno nuevo al añadir un enlace.
+Los enlaces se almacenan en un archivo JSON denominado `links.json` dentro de la carpeta de configuración de NVDA. Si el archivo no existe, se creará automáticamente cuando añadas tu primer enlace.
 
 ## Agradecimientos
 
-Agradecimientos a @yares y @rayo por su ayuda y pruebas.
+Quiero agradecer especialmente a [yares](https://github.com/JosePerezHuanca), [Angel Alcántar](https://github.com/rayo-alcantar) y a [Javi Domínguez](https://github.com/javidominguez) por su colaboración en las pruebas y mejoras del complemento.
 
 ## Registro de cambios
 
-### 0.1
+### Versión 0.1
 
-- Versión inicial.
+- Lanzamiento inicial del complemento.
 
-### 0.5
+### Versión 0.5
 
-- Soluciones de errores.
+- Corrección de errores y mejoras en la usabilidad.

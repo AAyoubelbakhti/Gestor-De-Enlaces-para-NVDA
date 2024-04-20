@@ -209,7 +209,7 @@ def saveLinkScript(title,url):
 @disableInSecureMode
 class GlobalPlugin(globalPluginHandler.GlobalPlugin):
     def __init__(self):
-        super(GlobalPlugin, self).__init__()
+        super().__init__()
         self.link_manager = None
     def create_or_toggle_link_manager(self):
         if not self.link_manager:
