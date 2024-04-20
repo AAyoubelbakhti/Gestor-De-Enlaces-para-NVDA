@@ -5,6 +5,7 @@
 
 #añadiremos la traducción  próximamente.
 
+import re
 import globalVars
 import os
 import globalPluginHandler
@@ -29,6 +30,15 @@ def disableInSecureMode(decoratedCls):
         return globalPluginHandler.GlobalPlugin;
     return decoratedCls;
 
+def validateUrl(url):
+    regex = re.compile(
+        r'^https?://|file://|ftp://'  # protocol...
+        r'(?:(?:[A-Z0-9](?:[A-Z0-9-]{0,61}[A-Z0-9])?\.)+[A-Z]{2,6}\.?|'  # domain...
+        r'localhost|'  # localhost...
+        r'\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})' # ...or ip
+        r'(?::\d+)?'  # optional port
+        r'(?:/?|[/?]\S+)$', re.IGNORECASE)
+    return True if regex.search(url) else False
 
 class LinkManager(wx.Dialog):
     def __init__(self, parent, title):
@@ -101,6 +111,10 @@ class LinkManager(wx.Dialog):
     def onAddOrEditLink(self, event):
         title = self.txtTitle.GetValue()
         url = self.txtUrl.GetValue()
+        if not validateUrl(url):
+            wx.MessageBox(_("La URL no es válida"), 'Error', wx.OK | wx.ICON_ERROR)
+            return 
+    
         if self.editingIndex is None:
             if title and url and title not in self.links:
                 self.links[title] = url
@@ -192,19 +206,27 @@ def saveLinkScript(title,url):
     with open(pathFile,'w') as file:
         json.dump(data,file)
 
-
-def start_link_manager():
-    gui.mainFrame.prePopup()
-    frame = LinkManager(gui.mainFrame,'Gestor de Enlaces')
-    gui.mainFrame.postPopup()
-
 @disableInSecureMode
 class GlobalPlugin(globalPluginHandler.GlobalPlugin):
+    def __init__(self):
+        super(GlobalPlugin, self).__init__()
+        self.link_manager = None
+    def create_or_toggle_link_manager(self):
+        if not self.link_manager:
+            self.link_manager = LinkManager(gui.mainFrame, 'Gestor de Enlaces')
+        else:
+            if not self.link_manager.IsShown():
+                gui.mainFrame.prePopup()
+                self.link_manager.Show()
+                gui.mainFrame.postPopup()
+            else:
+                self.link_manager.Hide()
+
     @script(description=_("Abre la ventana del gestor de enlaces"),
         gesture="kb:NVDA+alt+k",
         category=_("Gestor De Enlaces"))
     def script_open_file(self, gesture):
-        wx.CallAfter(start_link_manager)
+        wx.CallAfter(self.create_or_toggle_link_manager)
 
     @script(description='Añade el enlace de la web enfocada al  gestor de enlaces', gesture='kb:NVDA+alt+shift+k', category='Gestor De Enlaces')
     def script_GetUrl(self, gesture):
@@ -212,5 +234,8 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
         root = obj.treeInterceptor.rootNVDAObject
         url = root.IAccessibleObject.accValue(obj.IAccessibleChildID)
         title = root.name
-        saveLinkScript(title, url)
-        ui.message(f'Se añadió {title} a la lista')
+        if validateUrl(url):
+            saveLinkScript(title, url)
+            ui.message(f'Se añadió {title} a la lista')
+        else:
+            ui.message('La URL no es válida.')
