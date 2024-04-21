@@ -178,6 +178,10 @@ class LinkManager(wx.Dialog):
             self.editingIndex = None
             self.addLinkPanel.Hide()
             self.panel.Layout()
+            self.linkList.DeleteAllItems()
+            for title, url in self.links.items():
+                self.linkList.InsertItem(self.linkList.GetItemCount(), title)
+            self.linkList.SetFocus()
 
     def deleteLink(self):
         index = self.linkList.GetFirstSelected()
@@ -188,6 +192,10 @@ class LinkManager(wx.Dialog):
                 self.saveLinks()
                 #traductores: se informa que el enlace fue borrado.
                 wx.MessageBox(_("Enlace borrado"), _("Info"), wx.OK | wx.ICON_INFORMATION)
+            self.linkList.DeleteAllItems()
+            for title, url in self.links.items():
+                self.linkList.InsertItem(self.linkList.GetItemCount(), title)
+            self.linkList.SetFocus()
 
     def openLink(self, event):
         title = self.linkList.GetItemText(event.GetIndex())
