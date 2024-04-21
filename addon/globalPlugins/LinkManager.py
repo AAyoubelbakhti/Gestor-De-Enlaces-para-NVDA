@@ -9,7 +9,7 @@ import re
 import globalVars
 import os
 import globalPluginHandler
-from scriptHandler import script
+from scriptHandler import script, getLastScriptRepeatCount
 import wx
 import webbrowser
 import json
@@ -31,6 +31,7 @@ def disableInSecureMode(decoratedCls):
     return decoratedCls;
 
 def validateUrl(url):
+    if not url: return False
     regex = re.compile(
         r'^https?://|file://|ftp://'  # protocol...
         r'(?:(?:[A-Z0-9](?:[A-Z0-9-]{0,61}[A-Z0-9])?\.)+[A-Z]{2,6}\.?|'  # domain...
@@ -83,7 +84,6 @@ class LinkManager(wx.Dialog):
         self.editingIndex = None 
 
         self.Centre()
-        self.Show()
 
     def getJsonPath(self):
         return os.path.join(globalVars.appArgs.configPath, "links.json")
@@ -211,31 +211,50 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
     def __init__(self):
         super().__init__()
         self.link_manager = None
-    def create_or_toggle_link_manager(self):
+        self.addLinkInfo = "", ""
+
+    def create_or_toggle_link_manager(self, addLink=False):
         if not self.link_manager:
             self.link_manager = LinkManager(gui.mainFrame, 'Gestor de Enlaces')
-        else:
-            if not self.link_manager.IsShown():
-                gui.mainFrame.prePopup()
-                self.link_manager.Show()
-                gui.mainFrame.postPopup()
-            else:
-                self.link_manager.Hide()
+        if self.link_manager.IsShown() and not self.link_manager.IsActive():
+            # La ventana se muestra en pantalla pero está minimizada o en segundo plano. Se oculta para a continuación mostrarla de nuevo y así traerla al frente.
+            self.link_manager.Hide()
+        if not self.link_manager.IsShown():
+            gui.mainFrame.prePopup()
+            self.link_manager.Show()
+            gui.mainFrame.postPopup()
+        title, url = self.addLinkInfo
+        if addLink and validateUrl(url):
+            self.link_manager.addLinkPanel.Show()
+            self.link_manager.txtTitle.Clear()
+            self.link_manager.txtTitle.SetValue(title if title else _("Sin título"))
+            self.link_manager.txtTitle.SetFocus()
+            self.link_manager.txtUrl.Clear()
+            self.link_manager.txtUrl.SetValue(url)
+            # Después de usarla, se resetea
+            self.addLinkInfo = "", ""
+
+    def refreshLinkInfo(self):
+        title, url = "", ""
+        obj = api.getNavigatorObject()
+        if not obj.treeInterceptor:
+            obj = api.getFocusObject()
+        if obj.treeInterceptor:
+            root = obj.treeInterceptor.rootNVDAObject
+            url = root.IAccessibleObject.accValue(obj.IAccessibleChildID)
+            title = root.name
+        self.addLinkInfo = title, url
 
     @script(description=_("Abre la ventana del gestor de enlaces"),
         gesture="kb:NVDA+alt+k",
         category=_("Gestor De Enlaces"))
     def script_open_file(self, gesture):
-        wx.CallAfter(self.create_or_toggle_link_manager)
+        addLink = False
+        if getLastScriptRepeatCount() == 0:
+            # Con la primera pulsación del gesto guardamos la info del enlace si lo hay.
+            self.refreshLinkInfo()
+        elif getLastScriptRepeatCount() == 1:
+            # Con la segunda pulsación ponemos addLink a True para que create_or_toggle_link_manager sepa que si hay una url válida almacenada la tiene que mostrar.
+            addLink = True
+        wx.CallAfter(self.create_or_toggle_link_manager, addLink)
 
-    @script(description='Añade el enlace de la web enfocada al  gestor de enlaces', gesture='kb:NVDA+alt+shift+k', category='Gestor De Enlaces')
-    def script_GetUrl(self, gesture):
-        obj = api.getNavigatorObject()
-        root = obj.treeInterceptor.rootNVDAObject
-        url = root.IAccessibleObject.accValue(obj.IAccessibleChildID)
-        title = root.name
-        if validateUrl(url):
-            saveLinkScript(title, url)
-            ui.message(f'Se añadió {title} a la lista')
-        else:
-            ui.message('La URL no es válida.')
