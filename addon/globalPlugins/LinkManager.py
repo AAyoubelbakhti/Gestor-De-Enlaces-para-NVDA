@@ -41,6 +41,35 @@ def validateUrl(url):
         r'(?:/?|[/?]\S+)$', re.IGNORECASE)
     return True if regex.search(url) else False
 
+class ListContextMenu(wx.Menu):
+	def __init__(self, parent):
+		super(ListContextMenu, self).__init__()
+		self.parent = parent
+
+		item_addLink = wx.MenuItem(self, wx.ID_ANY, _("Añadir"))
+		self.Append(item_addLink)
+		self.Bind(wx.EVT_MENU, self.action_addLink, item_addLink)
+
+		item_editLink = wx.MenuItem(self, wx.ID_ANY, _("Editar"))
+		self.Append(item_editLink)
+		self.Bind(wx.EVT_MENU, self.action_editLink, item_editLink)
+
+		item_removeLink = wx.MenuItem(self, wx.ID_ANY, _("Borrar"))
+		self.Append(item_removeLink)
+		self.Bind(wx.EVT_MENU, self.action_removeLink, item_removeLink)
+
+	def action_addLink(self, event):
+		# Aquí el código para añadir un enlace
+		event.Skip()
+
+	def action_editLink(self, event):
+		# Aquí el código para editar el enlace
+		event.Skip()
+
+	def action_removeLink(self, event):
+		# Aquí el código para borrar un enlace
+		event.Skip()
+
 class LinkManager(wx.Dialog):
     def __init__(self, parent, title):
         super(LinkManager, self).__init__(parent, title=title, size=(500, 400))
@@ -84,6 +113,11 @@ class LinkManager(wx.Dialog):
         self.editingIndex = None 
 
         self.Centre()
+
+        self.Bind(wx.EVT_CONTEXT_MENU, self.onListContextMenu, self.linkList)
+
+    def onListContextMenu(self, event):
+        self.linkList.PopupMenu(ListContextMenu(self.linkList), self.linkList.GetPosition())
 
     def getJsonPath(self):
         return os.path.join(globalVars.appArgs.configPath, "links.json")
