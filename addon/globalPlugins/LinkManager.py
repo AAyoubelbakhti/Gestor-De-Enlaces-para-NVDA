@@ -24,7 +24,6 @@ except addonHandler.AddonError:
     from logHandler import log;
     log.warning('Unable to initialise translations. This may be because the addon is running from NVDA scratchpad.');
 
-
 def disableInSecureMode(decoratedCls):
     if globalVars.appArgs.secure:
         return globalPluginHandler.GlobalPlugin;
@@ -40,35 +39,6 @@ def validateUrl(url):
         r'(?::\d+)?'  # optional port
         r'(?:/?|[/?]\S+)$', re.IGNORECASE)
     return True if regex.search(url) else False
-
-class ListContextMenu(wx.Menu):
-	def __init__(self, parent):
-		super(ListContextMenu, self).__init__()
-		self.parent = parent
-
-		item_addLink = wx.MenuItem(self, wx.ID_ANY, _("Añadir"))
-		self.Append(item_addLink)
-		self.Bind(wx.EVT_MENU, self.action_addLink, item_addLink)
-
-		item_editLink = wx.MenuItem(self, wx.ID_ANY, _("Editar"))
-		self.Append(item_editLink)
-		self.Bind(wx.EVT_MENU, self.action_editLink, item_editLink)
-
-		item_removeLink = wx.MenuItem(self, wx.ID_ANY, _("Borrar"))
-		self.Append(item_removeLink)
-		self.Bind(wx.EVT_MENU, self.action_removeLink, item_removeLink)
-
-	def action_addLink(self, event):
-		# Aquí el código para añadir un enlace
-		event.Skip()
-
-	def action_editLink(self, event):
-		# Aquí el código para editar el enlace
-		event.Skip()
-
-	def action_removeLink(self, event):
-		# Aquí el código para borrar un enlace
-		event.Skip()
 
 class LinkManager(wx.Dialog):
     def __init__(self, parent, title):
@@ -121,9 +91,11 @@ class LinkManager(wx.Dialog):
 
     def contextMenu(self):
         menu=wx.Menu()
-        agregarLinkItem=menu.Append(wx.ID_ANY, "&Añadir link","añade un link a la lista")
+        #traductores: Opción para añadir enlaces
+        agregarLinkItem=menu.Append(wx.ID_ANY, "&Añadir un enlace","añade un link a la lista")
         self.Bind(wx.EVT_MENU, self.onContextMenuAddLink, agregarLinkItem)
-        editarItem=menu.Append(wx.ID_ANY,"&Editar","Editar item")
+        #traductores: Opción para editar el enlace
+        editarItem=menu.Append(wx.ID_ANY,"&Editar enlace","Editar item")
         self.Bind(wx.EVT_MENU, self.onContextMenuEditLink, editarItem)
         return menu
 
