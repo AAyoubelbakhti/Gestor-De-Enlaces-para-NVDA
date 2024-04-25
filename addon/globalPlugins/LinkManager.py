@@ -1,4 +1,5 @@
 #A part of NonVisual Desktop Access (NVDA)
+#A part of NonVisual Desktop Access (NVDA)
 #This file is covered by the GNU General Public License.
 #See the file COPYING for more details.
 #Copyright (C) 2024 Ayoub El Bakhti
@@ -92,13 +93,13 @@ class LinkManager(wx.Dialog):
     def contextMenu(self):
         menu=wx.Menu()
         #traductores: Opción para añadir enlaces
-        agregarLinkItem=menu.Append(wx.ID_ANY, "&Añadir un enlace","añade un link a la lista")
+        agregarLinkItem = menu.Append(wx.ID_ANY, _("&Añadir un enlace"), _("Añade un link a la lista")) 
         self.Bind(wx.EVT_MENU, self.onContextMenuAddLink, agregarLinkItem)
         #traductores: Opción para editar el enlace
-        editarItem=menu.Append(wx.ID_ANY,"&Editar enlace","Editar item")
+        editarItem = menu.Append(wx.ID_ANY, _("&Editar enlace"), _("Editar item")) 
         self.Bind(wx.EVT_MENU, self.onContextMenuEditLink, editarItem)
         #traductores: Opción para borrar el enlace
-        borrarItem=menu.Append(wx.ID_ANY,"&Borrar enlace","Borrar item") 
+        borrarItem=menu.Append(wx.ID_ANY,_("&Borrar enlace"),_("Borrar item")) 
         self.Bind(wx.EVT_MENU, self.onContextMenuDeleteLink, borrarItem) 
         return menu
 
