@@ -97,6 +97,9 @@ class LinkManager(wx.Dialog):
         #traductores: Opción para editar el enlace
         editarItem=menu.Append(wx.ID_ANY,"&Editar enlace","Editar item")
         self.Bind(wx.EVT_MENU, self.onContextMenuEditLink, editarItem)
+        #traductores: Opción para borrar el enlace
+        borrarItem=menu.Append(wx.ID_ANY,"&Borrar enlace","Borrar item") 
+        self.Bind(wx.EVT_MENU, self.onContextMenuDeleteLink, borrarItem) 
         return menu
 
     def onContextMenuAddLink(self, event):
@@ -104,6 +107,9 @@ class LinkManager(wx.Dialog):
 
     def onContextMenuEditLink(self, event):
         self.editLink()
+
+    def onContextMenuDeleteLink(self, event):
+        self.deleteLink()
 
     def getJsonPath(self):
         return os.path.join(globalVars.appArgs.configPath, "links.json")
