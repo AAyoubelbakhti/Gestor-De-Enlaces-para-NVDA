@@ -117,7 +117,21 @@ class LinkManager(wx.Dialog):
         self.Bind(wx.EVT_CONTEXT_MENU, self.onListContextMenu, self.linkList)
 
     def onListContextMenu(self, event):
-        self.linkList.PopupMenu(ListContextMenu(self.linkList), self.linkList.GetPosition())
+        self.linkList.PopupMenu(self.contextMenu(), self.linkList.GetPosition())
+
+    def contextMenu(self):
+        menu=wx.Menu()
+        agregarLinkItem=menu.Append(wx.ID_ANY, "&Añadir link","añade un link a la lista")
+        self.Bind(wx.EVT_MENU, self.onContextMenuAddLink, agregarLinkItem)
+        editarItem=menu.Append(wx.ID_ANY,"&Editar","Editar item")
+        self.Bind(wx.EVT_MENU, self.onContextMenuEditLink, editarItem)
+        return menu
+
+    def onContextMenuAddLink(self, event):
+        self.toggleAddLinkPanel()
+
+    def onContextMenuEditLink(self, event):
+        self.editLink()
 
     def getJsonPath(self):
         return os.path.join(globalVars.appArgs.configPath, "links.json")
@@ -299,4 +313,3 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
             # Con la segunda pulsación ponemos addLink a True para que create_or_toggle_link_manager sepa que si hay una url válida almacenada la tiene que mostrar.
             addLink = True
         wx.CallAfter(self.create_or_toggle_link_manager, addLink)
-
