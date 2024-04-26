@@ -1,5 +1,4 @@
-#A part of NonVisual Desktop Access (NVDA)
-#A part of NonVisual Desktop Access (NVDA)
+# Gestor de enlaces
 #This file is covered by the GNU General Public License.
 #See the file COPYING for more details.
 #Copyright (C) 2024 Ayoub El Bakhti
@@ -50,12 +49,20 @@ class LinkManager(wx.Dialog):
         self.panel.SetSizer(self.vbox)
 
         self.linkList = wx.ListCtrl(self.panel, style=wx.LC_REPORT)
-        self.linkList.InsertColumn(0, 'Titulo', width=400)
+        self.linkList.InsertColumn(0, 'Título', width=400)
         self.linkList.SetFocus()
         self.links = {}
         self.loadLinks()
         self.vbox.Add(self.linkList, proportion=1, flag=wx.EXPAND)
-
+        self.btnAddLink = wx.Button(self.panel, label=_("Añadir Enlace"))
+        self.btnEditLink = wx.Button(self.panel, label=_("Editar Enlace"))
+        self.btnDeleteLink = wx.Button(self.panel, label=_("Borrar Enlace"))
+        self.btnAddLink.Bind(wx.EVT_BUTTON, self.onContextMenuAddLink)
+        self.btnEditLink.Bind(wx.EVT_BUTTON, self.onContextMenuEditLink)
+        self.btnDeleteLink.Bind(wx.EVT_BUTTON, self.onContextMenuDeleteLink)
+        self.vbox.Add(self.btnAddLink, flag=wx.EXPAND | wx.TOP | wx.BOTTOM, border=5)
+        self.vbox.Add(self.btnEditLink, flag=wx.EXPAND | wx.TOP | wx.BOTTOM, border=5)
+        self.vbox.Add(self.btnDeleteLink, flag=wx.EXPAND | wx.TOP | wx.BOTTOM, border=5)
         self.addLinkPanel = wx.Panel(self.panel)
         addLinkBox = wx.BoxSizer(wx.HORIZONTAL)
         #traductores: campo para el título del link.
@@ -67,7 +74,6 @@ class LinkManager(wx.Dialog):
         #traductores: botón para guardar.
         self.addBtn = wx.Button(self.addLinkPanel, label=_("Guardar"))
         self.addBtn.Bind(wx.EVT_BUTTON, self.onAddOrEditLink)
-
         addLinkBox.Add(lblTitle, flag=wx.RIGHT, border=5)
         addLinkBox.Add(self.txtTitle, proportion=1, flag=wx.EXPAND | wx.RIGHT, border=5)
         addLinkBox.Add(lblUrl, flag=wx.RIGHT, border=5)
@@ -75,16 +81,11 @@ class LinkManager(wx.Dialog):
         addLinkBox.Add(self.addBtn)
         self.addLinkPanel.SetSizer(addLinkBox)
         self.addLinkPanel.Hide()
-
         self.vbox.Add(self.addLinkPanel, flag=wx.EXPAND | wx.TOP | wx.BOTTOM, border=10)
-
         self.linkList.Bind(wx.EVT_LIST_ITEM_ACTIVATED, self.openLink)
         self.Bind(wx.EVT_CHAR_HOOK, self.onKeyPress)
-
         self.editingIndex = None 
-
         self.Centre()
-
         self.Bind(wx.EVT_CONTEXT_MENU, self.onListContextMenu, self.linkList)
 
     def onListContextMenu(self, event):
@@ -101,6 +102,12 @@ class LinkManager(wx.Dialog):
         #traductores: Opción para borrar el enlace
         borrarItem=menu.Append(wx.ID_ANY,_("&Borrar enlace"),_("Borrar item")) 
         self.Bind(wx.EVT_MENU, self.onContextMenuDeleteLink, borrarItem) 
+        #traductores: Opción para exportar los enlaces
+        exportarItem = menu.Append(wx.ID_ANY, _("&Exportar enlaces"), _("Exportar enlaces"))
+        self.Bind(wx.EVT_MENU, self.onExportLinks, exportarItem)
+        #traductores: Opción para importar los enlaces
+        importarItem = menu.Append(wx.ID_ANY, _("&Importar enlaces"), _("Importar enlaces"))
+        self.Bind(wx.EVT_MENU, self.onImportLinks, importarItem)
         return menu
 
     def onContextMenuAddLink(self, event):
@@ -111,6 +118,35 @@ class LinkManager(wx.Dialog):
 
     def onContextMenuDeleteLink(self, event):
         self.deleteLink()
+
+    def onImportLinks(self, event):
+        wildcard = "JSON (*.json)|*.json"
+        dialog = wx.FileDialog(self, "Importar enlaces desde...", wildcard=wildcard, style=wx.FD_OPEN)
+        if dialog.ShowModal() == wx.ID_OK:
+            import_path = dialog.GetPath()
+            try:
+                with open(import_path, 'r') as file:
+                    imported_links = json.load(file)
+                    self.links.update(imported_links)
+                    self.saveLinks()
+                    self.loadLinks()
+                    wx.MessageBox(_("Enlaces importados correctamente."), _("Importación Exitosa"), wx.OK | wx.ICON_INFORMATION)
+            except Exception as e:
+                wx.MessageBox(_("Error al importar los enlaces: {0}").format(str(e)), _("Error"), wx.OK | wx.ICON_ERROR)
+        dialog.Destroy()
+
+    def onExportLinks(self, event):
+        wildcard = "JSON (*.json)|*.json"
+        dialog = wx.FileDialog(self, "Guardar enlace como...", wildcard=wildcard, style=wx.FD_SAVE | wx.FD_OVERWRITE_PROMPT)
+        if dialog.ShowModal() == wx.ID_OK:
+            export_path = dialog.GetPath()
+            try:
+                with open(export_path, 'w') as file:
+                    json.dump(self.links, file)
+                wx.MessageBox(_("Enlaces exportados correctamente."), _("Exportación Exitosa"), wx.OK | wx.ICON_INFORMATION)
+            except Exception as e:
+                wx.MessageBox(_("Error al exportar los enlaces: {0}").format(str(e)), _("Error"), wx.OK | wx.ICON_ERROR)
+        dialog.Destroy()
 
     def getJsonPath(self):
         return os.path.join(globalVars.appArgs.configPath, "links.json")
@@ -128,12 +164,16 @@ class LinkManager(wx.Dialog):
             ui.message(_("Archivo no encontrado: {path}. Se creará uno nuevo al añadir un enlace.").format(path=path))
             self.saveLinks()
         except json.JSONDecodeError:
-            ui.message(_("Error al decodificar JSON. Verifique el contenido del archivo."))
+            ui.message(_("Error al decodificar el JSON. Verifica el contenido del archivo."))
             self.saveLinks()
 
     def saveLinks(self):
-        with open(self.getJsonPath(), 'w') as file:
-            json.dump(self.links, file)
+        try:
+            with open(self.getJsonPath(), 'w') as file:
+                json.dump(self.links, file)
+        except Exception as e:
+            error_message = "Error al guardar los enlaces: {}".format(str(e))
+            wx.MessageBox(error_message, "Error", wx.OK | wx.ICON_ERROR)
 
     def onAddOrEditLink(self, event):
         title = self.txtTitle.GetValue()
@@ -181,10 +221,15 @@ class LinkManager(wx.Dialog):
         if index != -1:
             title = self.linkList.GetItemText(index)
             if title in self.links:
-                del self.links[title]
-                self.saveLinks()
-                #traductores: se informa que el enlace fue borrado.
-                wx.MessageBox(_("Enlace borrado"), _("Info"), wx.OK | wx.ICON_INFORMATION)
+                dlg = wx.MessageDialog(self, f"¿Estás seguro de que quieres borrar el enlace '{title}'?", wx.YES_NO | wx.ICON_QUESTION)
+                result = dlg.ShowModal()
+                dlg.Destroy()
+                if result == wx.ID_YES:
+                    del self.links[title]
+                    self.saveLinks()
+                    #traductores: se informa que el enlace fue borrado.
+                    wx.MessageBox(_("Enlace borrado"), _("Info"), wx.OK | wx.ICON_INFORMATION)
+                    self.loadLinks()
             self.linkList.DeleteAllItems()
             for title, url in self.links.items():
                 self.linkList.InsertItem(self.linkList.GetItemCount(), title)
@@ -244,7 +289,7 @@ def saveLinkScript(title,url):
 @disableInSecureMode
 class GlobalPlugin(globalPluginHandler.GlobalPlugin):
     def __init__(self):
-        super().__init__()
+        super(GlobalPlugin, self).__init__()
         self.link_manager = None
         self.addLinkInfo = "", ""
 

@@ -16,18 +16,18 @@ def _(arg):
 # Add-on information variables
 addon_info = {
 	# add-on Name/identifier, internal for NVDA
-	"addon_name": "GestorDeEnlaces",
+	"addon_name": "gestor de enlaces",
 	# Add-on summary, usually the user visible name of the addon.
 	# Translators: Summary for this add-on
 	# to be shown on installation and add-on information found in Add-ons Manager.
-	"addon_summary": _("GestorDeEnlaces"),
+	"addon_summary": _("gestor de enlaces"),
 	# Add-on description
 	# Translators: Long description to be shown for this add-on on add-on information from add-ons manager
 	"addon_description": _("""
 Pequeño complemento para gestionar y guardar links de forma rápida
 """),
 	# version
-	"addon_version": "0.5",
+	"addon_version": "1.1",
 	# Author(s)
 	"addon_author": "Ayoub <ayoubelbak13@gmail.com>",
 	# URL for the add-on documentation support
@@ -37,9 +37,9 @@ Pequeño complemento para gestionar y guardar links de forma rápida
 	# Documentation file name
 	"addon_docFileName": "readme.html",
 	# Minimum NVDA version supported (e.g. "2018.3.0", minor version is optional)
-	"addon_minimumNVDAVersion": 2024.1,
+	"addon_minimumNVDAVersion": "2024.1",
 	# Last NVDA version supported/tested (e.g. "2018.4.0", ideally more recent than minimum version)
-	"addon_lastTestedNVDAVersion": 2024.1,
+	"addon_lastTestedNVDAVersion": "2024.1",
 	# Add-on update channel (default is None, denoting stable releases,
 	# and for development releases, use "dev".)
 	# Do not change unless you know what you are doing!

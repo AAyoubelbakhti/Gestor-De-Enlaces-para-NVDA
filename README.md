@@ -8,7 +8,7 @@ Este complemento para NVDA permite gestionar enlaces web de manera eficiente, fa
 
 Para añadir un nuevo enlace, sigue estos pasos:
 
-1. Activa el panel de añadir enlaces con `Ctrl + A`.
+1. Activa el panel de añadir enlaces con `Ctrl + A` o pulsando el botón "añadir enlace".
 2. Escribe el título del enlace en el campo "Título".
 3. Introduce la URL en el campo "URL".
 4. Pulsa el botón "Guardar" para almacenar el enlace.
@@ -21,12 +21,13 @@ Para abrir un enlace guardado:
 
 - Selecciona el título del enlace en la lista y presiona `Enter` o `Espacio` para abrirlo en tu navegador predeterminado.
 
-### Editar y Borrar Enlaces
+### Editar, Borrar, Importar y Exportar Enlaces
 
 Para modificar o eliminar enlaces existentes:
 
-- **Editar un Enlace**: Selecciona el enlace deseado de la lista y pulsa `Ctrl + E`.
-- **Borrar un Enlace**: Selecciona el enlace deseado de la lista y pulsa `Ctrl + B`.
+- **Editar un Enlace**: Selecciona el enlace deseado de la lista y pulsa `Ctrl + E` o pulsa el botón "Editar enlace".
+- **Borrar un Enlace**: Selecciona el enlace deseado de la lista y pulsa `Ctrl + B` o el botón "borrar enlace".
+Estas acciones también se pueden hacer con el menú contextual, pulsando aplicaciones. Desde dicho menú también tenemos las opciones de exportar nuestros enlaces e importar, útil en caso de querer conservarlos.
 
 ### Añadir enlaces desde el navegador
 
@@ -55,3 +56,10 @@ Quiero agradecer especialmente a [yares](https://github.com/JosePerezHuanca), [A
 - Muchos cambios internos.
 - Modificada la forma de agregar enlaces.
 - Añadido el menú contextual.
+
+### Versión 1.1
+- Añadidos botones a la interfaz para hacer las acciones principales del programa
+- Añadida la opción de exportar e importar el json al menú contextual
+- Arreglados pequeños problemas  en los errores
+- Añadidos  mensajes de traducción
+
