@@ -231,7 +231,7 @@ class LinkManager(wx.Dialog):
         if index != -1:
             title = self.linkList.GetItemText(index)
             if title in self.links:
-                dlg = wx.MessageDialog(self, f"¿Estás seguro de que quieres borrar el enlace '{title}'?", wx.YES_NO | wx.ICON_QUESTION)
+                dlg = wx.MessageDialog(self, f"¿Estás seguro de que quieres borrar el enlace '{title}'?", "Confirmar",  wx.YES_NO | wx.ICON_QUESTION)
                 result = dlg.ShowModal()
                 dlg.Destroy()
                 if result == wx.ID_YES:
