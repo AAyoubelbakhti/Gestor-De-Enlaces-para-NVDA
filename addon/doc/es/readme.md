@@ -63,3 +63,5 @@ Quiero agradecer especialmente a [yares](https://github.com/JosePerezHuanca), [A
 - Arreglados pequeños problemas  en los errores
 - Añadidos  mensajes de traducción
 
+### Versión 1.1.1
+- Arreglado un pequeño gran problema
