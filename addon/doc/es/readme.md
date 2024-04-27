@@ -63,3 +63,8 @@ Quiero agradecer especialmente a [José Pérez](https://github.com/JosePerezHuan
 - Arreglados pequeños problemas  en los errores
 - Añadidos  mensajes de traducción
 
+### Versión 1.1.1
+- Arreglado un pequeño gran problema
+
+### Versión 1.1.2
+-  Solución de problemas
