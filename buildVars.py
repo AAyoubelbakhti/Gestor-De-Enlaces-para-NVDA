@@ -16,7 +16,7 @@ def _(arg):
 # Add-on information variables
 addon_info = {
 	# add-on Name/identifier, internal for NVDA
-	"addon_name": "gestor de enlaces",
+	"addon_name": "gestorDeEnlaces",
 	# Add-on summary, usually the user visible name of the addon.
 	# Translators: Summary for this add-on
 	# to be shown on installation and add-on information found in Add-ons Manager.
@@ -27,7 +27,7 @@ addon_info = {
 Pequeño complemento para gestionar y guardar links de forma rápida
 """),
 	# version
-	"addon_version": "1.1.1",
+	"addon_version": "1.1.2",
 	# Author(s)
 	"addon_author": "Ayoub <ayoubelbak13@gmail.com>",
 	# URL for the add-on documentation support

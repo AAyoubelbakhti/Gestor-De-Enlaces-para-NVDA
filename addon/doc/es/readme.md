@@ -65,3 +65,6 @@ Quiero agradecer especialmente a [yares](https://github.com/JosePerezHuanca), [A
 
 ### Versión 1.1.1
 - Arreglado un pequeño gran problema
+
+### Versión 1.1.2
+-  Solución de problemas
