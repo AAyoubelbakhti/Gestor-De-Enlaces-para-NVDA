@@ -39,7 +39,7 @@ Los enlaces se almacenan en un archivo JSON denominado `links.json` dentro de la
 
 ## Agradecimientos
 
-Quiero agradecer especialmente a [yares](https://github.com/JosePerezHuanca), [Angel Alcántar](https://github.com/rayo-alcantar) y a [Javi Domínguez](https://github.com/javidominguez) por su colaboración en las pruebas y mejoras del complemento.
+Quiero agradecer especialmente a [José Pérez](https://github.com/JosePerezHuanca), [Angel Alcántar](https://github.com/rayo-alcantar) y a [Javi Domínguez](https://github.com/javidominguez) por su colaboración en las pruebas y mejoras del complemento.
 
 ## Registro de cambios
 
