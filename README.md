@@ -68,3 +68,7 @@ Quiero agradecer especialmente a [José Pérez](https://github.com/JosePerezHuan
 
 ### Versión 1.1.2
 -  Solución de problemas
+
+### Versión 1.1.3
+
+Se cierra con escape.
