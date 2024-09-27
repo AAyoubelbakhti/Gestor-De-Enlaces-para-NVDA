@@ -265,7 +265,16 @@ class LinkManager(wx.Dialog):
             self.deleteLink()
         elif event.ControlDown() and keycode == ord('C'):
             self.copyLinkToClipboard()
+        elif event.ControlDown() and keycode == ord('R'):
+            self.reorderLinks() 
         event.Skip()
+
+    def reorderLinks(self):
+        self.links = dict(sorted(self.links.items()))
+        self.saveLinks()
+        self.loadLinks() 
+        #Translators: Mensaje de ordenación alfabética
+        wx.MessageBox(_("Enlaces ordenados alfabéticamente."), _("Info"), wx.OK | wx.ICON_INFORMATION)
 
     def copyLinkToClipboard(self):
         index = self.linkList.GetFirstSelected()

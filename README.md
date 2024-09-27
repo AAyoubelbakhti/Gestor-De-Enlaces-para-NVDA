@@ -74,5 +74,7 @@ Quiero agradecer especialmente a [José Pérez](https://github.com/JosePerezHuan
 -  Ahora el complemento se puede cerrar con escape.
 
 ###  Versión 1.2.0
-- Nuevo atajo de teclado en la interfaz: Control + c: copiar la URL del enlace enfocado.
+- Nuevos atajos de teclado en la interfaz:
+Control + c: copiar la URL del enlace enfocado.
+Control + r: reordenar los enlaces alfabéticamente.
 - Corrección de errores
