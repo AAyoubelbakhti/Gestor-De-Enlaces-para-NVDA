@@ -1,4 +1,4 @@
-# Gestor de enlaces
+#Gestor de enlaces
 #This file is covered by the GNU General Public License.
 #See the file COPYING for more details.
 #Copyright (C) 2024 Ayoub El Bakhti
@@ -31,11 +31,11 @@ def disableInSecureMode(decoratedCls):
 def validateUrl(url):
     if not url: return False
     regex = re.compile(
-        r'^https?://|file://|ftp://'  # protocol...
-        r'(?:(?:[A-Z0-9](?:[A-Z0-9-]{0,61}[A-Z0-9])?\.)+[A-Z]{2,6}\.?|'  # domain...
-        r'localhost|'  # localhost...
-        r'\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})' # ...or ip
-        r'(?::\d+)?'  # optional port
+        r'^https?://|file://|ftp://'  #protocol...
+        r'(?:(?:[A-Z0-9](?:[A-Z0-9-]{0,61}[A-Z0-9])?\.)+[A-Z]{2,6}\.?|'  #domain...
+        r'localhost|'  #localhost...
+        r'\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})' #...or ip
+        r'(?::\d+)?'  #optional port
         r'(?:/?|[/?]\S+)$', re.IGNORECASE)
     return True if regex.search(url) else False
 
@@ -67,13 +67,13 @@ class LinkManager(wx.Dialog):
         self.vbox.Add(self.btnDeleteLink, flag=wx.EXPAND | wx.TOP | wx.BOTTOM, border=5)
         self.addLinkPanel = wx.Panel(self.panel)
         addLinkBox = wx.BoxSizer(wx.HORIZONTAL)
-        # Translators: campo para el título del link.
+        #Translators: campo para el título del link.
         lblTitle = wx.StaticText(self.addLinkPanel, label=_("Título:"))
         self.txtTitle = wx.TextCtrl(self.addLinkPanel)
-        # Translators: panel para la url.
+        #Translators: panel para la url.
         lblUrl = wx.StaticText(self.addLinkPanel, label=_("URL:"))
         self.txtUrl = wx.TextCtrl(self.addLinkPanel)
-        # Translators: botón para guardar.
+        #Translators: botón para guardar.
         self.addBtn = wx.Button(self.addLinkPanel, label=_("&Guardar"))
         self.addBtn.Bind(wx.EVT_BUTTON, self.onAddOrEditLink)
         addLinkBox.Add(lblTitle, flag=wx.RIGHT, border=5)
@@ -97,19 +97,19 @@ class LinkManager(wx.Dialog):
 
     def contextMenu(self):
         menu=wx.Menu()
-        # Translators: Opción para añadir enlaces
+        #Translators: Opción para añadir enlaces
         agregarLinkItem = menu.Append(wx.ID_ANY, _("&Añadir un enlace"), _("Añade un link a la lista")) 
         self.Bind(wx.EVT_MENU, self.onContextMenuAddLink, agregarLinkItem)
-        # Translators: Opción para editar el enlace
+        #Translators: Opción para editar el enlace
         editarItem = menu.Append(wx.ID_ANY, _("&Editar enlace"), _("Editar item")) 
         self.Bind(wx.EVT_MENU, self.onContextMenuEditLink, editarItem)
-        # Translators: Opción para borrar el enlace
+        #Translators: Opción para borrar el enlace
         borrarItem=menu.Append(wx.ID_ANY,_("&Borrar enlace"),_("Borrar item")) 
         self.Bind(wx.EVT_MENU, self.onContextMenuDeleteLink, borrarItem) 
-        # Translators: Opción para exportar los enlaces
+        #Translators: Opción para exportar los enlaces
         exportarItem = menu.Append(wx.ID_ANY, _("&Exportar enlaces"), _("Exportar enlaces"))
         self.Bind(wx.EVT_MENU, self.onExportLinks, exportarItem)
-        # Translators: Opción para importar los enlaces
+        #Translators: Opción para importar los enlaces
         importarItem = menu.Append(wx.ID_ANY, _("&Importar enlaces"), _("Importar enlaces"))
         self.Bind(wx.EVT_MENU, self.onImportLinks, importarItem)
         return menu
@@ -137,7 +137,7 @@ class LinkManager(wx.Dialog):
                     #Translators: Se anuncia que los enlaces han sido importados correctamente.
                     wx.MessageBox(_("Enlaces importados correctamente."), _("Importación Exitosa"), wx.OK | wx.ICON_INFORMATION)
             except Exception as e:
-                # Translators: se anuncia que hubo un error al importar los enlaces.
+                #Translators: se anuncia que hubo un error al importar los enlaces.
                 wx.MessageBox(_("Error al importar los enlaces: {0}").format(str(e)), _("Error"), wx.OK | wx.ICON_ERROR)
         dialog.Destroy()
 
@@ -149,11 +149,11 @@ class LinkManager(wx.Dialog):
             try:
                 with open(export_path, 'w') as file:
                     json.dump(self.links, file)
-                # Translators: se anuncia que se exportaron los enlaces correctamente.
+                #Translators: se anuncia que se exportaron los enlaces correctamente.
                 wx.MessageBox(_("Enlaces exportados correctamente."), _("Exportación Exitosa"), wx.OK | wx.ICON_INFORMATION)
             except Exception as e:
             
-                # Translators: se anuncia que hubo un error al exportar los enlaces.
+                #Translators: se anuncia que hubo un error al exportar los enlaces.
                 wx.MessageBox(_("Error al exportar los enlaces: {0}").format(str(e)), _("Error"), wx.OK | wx.ICON_ERROR)
         dialog.Destroy()
 
@@ -170,7 +170,7 @@ class LinkManager(wx.Dialog):
                 for title, url in self.links.items():
                     self.linkList.InsertItem(self.linkList.GetItemCount(), title)
         except FileNotFoundError:
-            # Translators: se anuncia al usuario que se creará un nuevo archivo si no se encuentra.
+            #Translators: se anuncia al usuario que se creará un nuevo archivo si no se encuentra.
             ui.message(_("Archivo no encontrado: {path}. Se creará uno nuevo al añadir un enlace.").format(path=path))
             self.saveLinks()
         except json.JSONDecodeError:
@@ -198,7 +198,7 @@ class LinkManager(wx.Dialog):
             if title and url and title not in self.links:
                 self.links[title] = url
                 self.saveLinks()
-                # Translators: se anuncia que se añadió un enlace.
+                #Translators: se anuncia que se añadió un enlace.
                 wx.MessageBox(_("Enlace añadido"), _("Info"), wx.OK | wx.ICON_INFORMATION)
                 self.loadLinks()
                 self.txtTitle.Clear()
@@ -210,7 +210,7 @@ class LinkManager(wx.Dialog):
             existing_title = self.linkList.GetItemText(self.editingIndex)
             if title and url:
                 if title != existing_title and title in self.links:
-                    # Translators: se informa que un enlace con ese título ya existe.
+                    #Translators: se informa que un enlace con ese título ya existe.
                     wx.MessageBox(_("Un enlace con este título ya existe"), 'Error', wx.OK | wx.ICON_ERROR)
                 else:
                     del self.links[existing_title]
@@ -239,7 +239,7 @@ class LinkManager(wx.Dialog):
                 if result == wx.ID_YES:
                     del self.links[title]
                     self.saveLinks()
-                    # Translators: se informa que el enlace fue borrado.
+                    #Translators: se informa que el enlace fue borrado.
                     wx.MessageBox(_("Enlace borrado"), _("Info"), wx.OK | wx.ICON_INFORMATION)
                     self.loadLinks()
             self.linkList.DeleteAllItems()
@@ -251,7 +251,7 @@ class LinkManager(wx.Dialog):
         title = self.linkList.GetItemText(event.GetIndex())
         url = self.links.get(title)
         if url:
-            # Translators: mensaje mostrado cuando se está abriendo una URL en el navegador.
+            #Translators: mensaje mostrado cuando se está abriendo una URL en el navegador.
             ui.message(_("Abriendo URL..."))
             webbrowser.open(url)
 
@@ -265,7 +265,24 @@ class LinkManager(wx.Dialog):
             self.editLink()
         elif event.ControlDown() and keycode == ord('B'):
             self.deleteLink()
+        elif event.ControlDown() and keycode == ord('C'):
+            self.copyLinkToClipboard()
         event.Skip()
+
+    def copyLinkToClipboard(self):
+        index = self.linkList.GetFirstSelected()
+        if index != -1:
+            title = self.linkList.GetItemText(index)
+            url = self.links.get(title)
+            if url:
+                if wx.TheClipboard.Open():
+                    wx.TheClipboard.SetData(wx.TextDataObject(url))
+                    wx.TheClipboard.Close()
+                    #Translators: se muestra un mensaje cuando se copia un enlace al portapapeles.
+                    wx.MessageBox(_("Enlace copiado al portapapeles"), _("Info"), wx.OK | wx.ICON_INFORMATION)
+                else:
+                    #Translators: mensaje cuando no se puede abrir el portapapeles.
+                    wx.MessageBox(_("No se pudo abrir el portapapeles"), _("Error"), wx.OK | wx.ICON_ERROR)
 
     def toggleAddLinkPanel(self):
         if self.addLinkPanel.IsShown():
@@ -311,7 +328,7 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
         if not self.link_manager:
             self.link_manager = LinkManager(gui.mainFrame, 'Gestor de Enlaces')
         if self.link_manager.IsShown() and not self.link_manager.IsActive():
-            # La ventana se muestra en pantalla pero está minimizada o en segundo plano. Se oculta para a continuación mostrarla de nuevo y así traerla al frente.
+            #La ventana se muestra en pantalla pero está minimizada o en segundo plano. Se oculta para a continuación mostrarla de nuevo y así traerla al frente.
             self.link_manager.Hide()
         if not self.link_manager.IsShown():
             gui.mainFrame.prePopup()
@@ -325,7 +342,7 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
             self.link_manager.txtTitle.SetFocus()
             self.link_manager.txtUrl.Clear()
             self.link_manager.txtUrl.SetValue(url)
-            # Después de usarla, se resetea
+            #Después de usarla, se resetea
             self.addLinkInfo = "", ""
 
     def refreshLinkInfo(self):
@@ -338,16 +355,16 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
             url = root.IAccessibleObject.accValue(obj.IAccessibleChildID)
             title = root.name
         self.addLinkInfo = title, url
-# Translators: decorador para el script.
+#Translators: decorador para el script.
     @script(description=_("Abre la ventana del gestor de enlaces"),
         gesture="kb:NVDA+alt+k",
         category=_("Gestor De Enlaces"))
     def script_open_file(self, gesture):
         addLink = False
         if getLastScriptRepeatCount() == 0:
-            # Con la primera pulsación del gesto guardamos la info del enlace si lo hay.
+            #Con la primera pulsación del gesto guardamos la info del enlace si lo hay.
             self.refreshLinkInfo()
         elif getLastScriptRepeatCount() == 1:
-            # Con la segunda pulsación ponemos addLink a True para que create_or_toggle_link_manager sepa que si hay una url válida almacenada la tiene que mostrar.
+            #Con la segunda pulsación ponemos addLink a True para que create_or_toggle_link_manager sepa que si hay una url válida almacenada la tiene que mostrar.
             addLink = True
         wx.CallAfter(self.create_or_toggle_link_manager, addLink)
