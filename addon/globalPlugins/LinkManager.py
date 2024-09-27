@@ -270,7 +270,7 @@ class LinkManager(wx.Dialog):
         event.Skip()
 
     def reorderLinks(self):
-        self.links = dict(sorted(self.links.items()))
+        self.links = dict(sorted(self.links.items(), key=lambda item: item[0].lower()))
         self.saveLinks()
         self.loadLinks() 
         #Translators: Mensaje de ordenación alfabética
