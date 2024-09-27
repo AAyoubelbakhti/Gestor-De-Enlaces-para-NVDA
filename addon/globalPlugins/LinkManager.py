@@ -86,8 +86,6 @@ class LinkManager(wx.Dialog):
         self.vbox.Add(self.addLinkPanel, flag=wx.EXPAND | wx.TOP | wx.BOTTOM, border=10)
         self.linkList.Bind(wx.EVT_LIST_ITEM_ACTIVATED, self.openLink)
         self.Bind(wx.EVT_CHAR_HOOK, self.onKeyPress)
-
-
         self.editingIndex = None 
         self.Centre()
         self.Bind(wx.EVT_CONTEXT_MENU, self.onListContextMenu, self.linkList)
