@@ -274,7 +274,7 @@ class LinkManager(wx.Dialog):
         self.saveLinks()
         self.loadLinks() 
         #Translators: Mensaje de ordenación alfabética
-        wx.MessageBox(_("Enlaces ordenados alfabéticamente."), _("Info"), wx.OK | wx.ICON_INFORMATION)
+        ui.message(_("Enlaces ordenados alfabéticamente"))
 
     def copyLinkToClipboard(self):
         index = self.linkList.GetFirstSelected()
@@ -286,7 +286,7 @@ class LinkManager(wx.Dialog):
                     wx.TheClipboard.SetData(wx.TextDataObject(url))
                     wx.TheClipboard.Close()
                     #Translators: se muestra un mensaje cuando se copia un enlace al portapapeles.
-                    wx.MessageBox(_("Enlace copiado al portapapeles"), _("Info"), wx.OK | wx.ICON_INFORMATION)
+                    ui.message(_("Enlace copiado al portapapeles"))
                 else:
                     #Translators: mensaje cuando no se puede abrir el portapapeles.
                     wx.MessageBox(_("No se pudo abrir el portapapeles"), _("Error"), wx.OK | wx.ICON_ERROR)
