@@ -31,7 +31,7 @@ class FromClipboard(wx.Dialog):
 			message(_("opening {url}").format(url=links[0]))
 			return wb.open(links[0])
 
-		super().__init__(parent, -1, _("Choose a link to open"))
+		super().__init__(parent, -1, _("Elija un enlace para abrir"))
 		p = wx.Panel(self)
 		wx.StaticText(p, -1, _("{count} links found").format(count=len(links)))
 		self.linksList = wx.ListBox(p, -1)
