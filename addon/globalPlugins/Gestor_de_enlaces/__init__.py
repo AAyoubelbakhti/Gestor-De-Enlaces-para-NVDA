@@ -8,6 +8,7 @@ import re
 import globalVars
 import os
 import globalPluginHandler
+from .from_clipboard import FromClipboard
 from scriptHandler import script, getLastScriptRepeatCount
 import wx
 import webbrowser
@@ -832,3 +833,10 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
             #Con la segunda pulsación ponemos addLink a True para que create_or_toggle_link_manager sepa que si hay una url válida almacenada la tiene que mostrar.
             addLink = True
         wx.CallAfter(self.create_or_toggle_link_manager, addLink)
+    @script(
+        description=_("Abrir enlace desde el portapapeles"),
+        gesture="kb:NVDA+z",
+        category=_("Gestor De Enlaces")
+    )
+    def script_open_clipboard_link(self, gesture):
+        wx.CallAfter(FromClipboard, gui.mainFrame)
