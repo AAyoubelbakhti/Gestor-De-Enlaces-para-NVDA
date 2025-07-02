@@ -64,7 +64,22 @@ Quiero agradecer especialmente a [José Pérez](https://github.com/JosePerezHuan
 - Añadidos  mensajes de traducción
 
 ### Versión 1.1.1
-- Arreglado un pequeño gran problema
+- Arreglado un pequeño gran problema en el complemento
 
 ### Versión 1.1.2
 -  Solución de problemas
+
+### Versión 1.1.3
+
+-  Ahora el complemento se puede cerrar con escape.
+
+###  Versión 1.2.0
+- Nuevos atajos de teclado en la interfaz:
+Control + c: copiar la URL del enlace enfocado.
+Control + r: reordenar los enlaces alfabéticamente.
+- Corrección de errores
+
+
+###  Versión 1.5
+- Compatible con NVDA 25.1
+- Añadidas categorías para  los enlaces

@@ -78,3 +78,8 @@ Quiero agradecer especialmente a [José Pérez](https://github.com/JosePerezHuan
 Control + c: copiar la URL del enlace enfocado.
 Control + r: reordenar los enlaces alfabéticamente.
 - Corrección de errores
+
+
+###  Versión 1.5
+- Compatible con NVDA 25.1
+- Añadidas categorías para  los enlaces
