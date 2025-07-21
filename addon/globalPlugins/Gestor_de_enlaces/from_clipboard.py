@@ -28,7 +28,7 @@ class FromClipboard(wx.Dialog):
 			return message(_("El portapepeles Está vacío, no hay enlace o el mismo no es válido"))
 		
 		if len(links) == 1:
-			message(_("opening {url}").format(url=links[0]))
+			message(_("Abriendo {url}").format(url=links[0]))
 			return wb.open(links[0])
 
 		super().__init__(parent, -1, _("Elija un enlace para abrir"))
