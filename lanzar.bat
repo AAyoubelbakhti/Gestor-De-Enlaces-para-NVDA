@@ -8,7 +8,6 @@ set "REPO_OWNER=AAyoubelbakhti"
 set "REPO_NAME=Gestor-De-Enlaces-para-NVDA"
 set "REPO=%REPO_OWNER%/%REPO_NAME%"
 
-
 set "BUILD_CMD=scons"
 
 REM =====================================
@@ -39,7 +38,24 @@ if "%VERSION%"=="" (
 )
 
 REM =====================================
-REM Build (opcional)
+REM Verificar tags ANTES de hacer nada (idiot-proof)
+REM =====================================
+git rev-parse -q --verify "refs/tags/%VERSION%" >nul 2>&1
+if not errorlevel 1 (
+  echo ERROR: El tag "%VERSION%" ya existe localmente.
+  echo Borralo con: git tag -d %VERSION%
+  exit /b 1
+)
+
+git ls-remote --tags origin "%VERSION%" | findstr /i "%VERSION%" >nul 2>&1
+if not errorlevel 1 (
+  echo ERROR: El tag "%VERSION%" ya existe en el remoto.
+  echo Borralo con: git push origin :refs/tags/%VERSION%
+  exit /b 1
+)
+
+REM =====================================
+REM Build
 REM =====================================
 if not "%BUILD_CMD%"=="" (
   echo.
@@ -58,6 +74,7 @@ set "ADDON_FILE="
 for %%F in (*.nvda-addon) do (
   if defined ADDON_FILE (
     echo ERROR: hay mas de un .nvda-addon en la carpeta.
+    echo Borra los viejos y deja solo uno.
     exit /b 1
   )
   set "ADDON_FILE=%%F"
@@ -95,26 +112,14 @@ if errorlevel 1 (
   echo No hay cambios para commit. Continuo...
 )
 
-REM Crear tag (si ya existe, aborta)
-git rev-parse -q --verify "refs/tags/%VERSION%" >nul 2>&1
-if not errorlevel 1 (
-  echo ERROR: El tag "%VERSION%" ya existe localmente.
-  exit /b 1
-)
-
+REM Crear tag (UNA SOLA VEZ)
 git tag "%VERSION%"
 if errorlevel 1 (
   echo ERROR: no se pudo crear el tag.
   exit /b 1
 )
 
-
-git tag "%VERSION%"
-if errorlevel 1 (
-  echo ERROR: no se pudo crear el tag.
-  exit /b 1
-)
-
+REM Push commit y tag
 git push
 if errorlevel 1 (
   echo ERROR: git push fallo.
