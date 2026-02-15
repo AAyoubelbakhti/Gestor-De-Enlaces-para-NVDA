@@ -96,11 +96,18 @@ if errorlevel 1 (
 )
 
 REM Crear tag (si ya existe, aborta)
-git tag "%VERSION%" >nul 2>&1
+git rev-parse -q --verify "refs/tags/%VERSION%" >nul 2>&1
 if not errorlevel 1 (
   echo ERROR: El tag "%VERSION%" ya existe localmente.
   exit /b 1
 )
+
+git tag "%VERSION%"
+if errorlevel 1 (
+  echo ERROR: no se pudo crear el tag.
+  exit /b 1
+)
+
 
 git tag "%VERSION%"
 if errorlevel 1 (
