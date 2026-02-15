@@ -27,7 +27,7 @@ addon_info = {
 Pequeño complemento para gestionar y guardar links de forma rápida
 """),
 	# version
-	"addon_version": "2026.2.12",
+	"addon_version": "2026.2.15",
 	# Author(s)
 	"addon_author": "Ayoub <ayoubelbak13@gmail.com>",
 	# URL for the add-on documentation support
