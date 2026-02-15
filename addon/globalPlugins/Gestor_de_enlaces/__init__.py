@@ -751,6 +751,38 @@ class LinkManager(wx.Dialog):
                 self.toggleAddLinkPanel(is_editing=True) 
 
 
+def _load_links_data():
+    """Carga los datos de enlaces y categorías desde links.json.
+    Devuelve (links_dict, categories_list).
+    """
+    path = os.path.join(globalVars.appArgs.configPath, "links.json")
+    links = {}
+    categories = []
+    try:
+        with open(path, 'r', encoding='utf-8') as file:
+            data = json.load(file)
+            categories = data.get("__user_defined_categories__", [])
+            if not isinstance(categories, list):
+                categories = []
+            categories.sort(key=lambda s: s.lower())
+            for title, item in data.items():
+                if title == "__user_defined_categories__":
+                    continue
+                if isinstance(item, str):
+                    links[title] = {"url": item, "categories": [UNCATEGORIZED]}
+                elif isinstance(item, dict) and item.get("url"):
+                    cats = item.get("categories")
+                    if isinstance(cats, list) and cats:
+                        links[title] = {"url": item["url"], "categories": cats}
+                    elif isinstance(cats, str) and cats:
+                        links[title] = {"url": item["url"], "categories": [cats]}
+                    else:
+                        links[title] = {"url": item["url"], "categories": [UNCATEGORIZED]}
+    except (FileNotFoundError, json.JSONDecodeError, Exception):
+        pass
+    return links, categories
+
+
 def saveLinkScript(title, url, category_name=None):
     pathFile = os.path.join(globalVars.appArgs.configPath, "links.json")
     data_file_content = {}
@@ -788,6 +820,11 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
         super(GlobalPlugin, self).__init__()
         self.link_manager = None
         self.addLinkInfo = "", ""
+        # Estado de navegación virtual
+        self._nav_links = []        # Lista de tuplas (título, url, categorías)
+        self._nav_categories = []   # Lista de nombres de categorías
+        self._nav_link_index = -1   # Índice actual en la navegación de enlaces
+        self._nav_cat_index = -1    # Índice actual en la navegación de categorías
 
     def create_or_toggle_link_manager(self, addLink=False):
         if not self.link_manager:
@@ -840,3 +877,126 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
     )
     def script_open_clipboard_link(self, gesture):
         wx.CallAfter(FromClipboard, gui.mainFrame)
+
+    def _refresh_nav_data(self):
+        """Recarga los datos de navegación desde el archivo JSON."""
+        links_dict, categories = _load_links_data()
+        # Construir lista ordenada de enlaces
+        self._nav_links = []
+        for title in sorted(links_dict.keys(), key=lambda k: k.lower()):
+            data = links_dict[title]
+            self._nav_links.append((title, data["url"], data.get("categories", [UNCATEGORIZED])))
+        # Categorías: incluir "Sin categoría" si hay enlaces sin categoría, más las definidas por el usuario
+        all_cats = set()
+        for _title, _url, cats in self._nav_links:
+            for c in cats:
+                all_cats.add(c)
+        for c in categories:
+            all_cats.add(c)
+        self._nav_categories = sorted(list(all_cats), key=lambda s: s.lower())
+
+    def _get_filtered_links(self):
+        """Devuelve la lista de enlaces filtrada por la categoría seleccionada."""
+        if self._nav_cat_index < 0 or self._nav_cat_index >= len(self._nav_categories):
+            return self._nav_links
+        selected_cat = self._nav_categories[self._nav_cat_index]
+        return [(t, u, c) for t, u, c in self._nav_links if selected_cat in c]
+
+    @script(
+        # Translators: Descripción del script para ir al enlace siguiente en la navegación virtual.
+        description=_("Ir al enlace siguiente"),
+        gesture=None,
+        category=_("Gestor De Enlaces")
+    )
+    def script_next_link(self, gesture):
+        self._refresh_nav_data()
+        filtered = self._get_filtered_links()
+        if not filtered:
+            # Translators: Se anuncia cuando no hay enlaces disponibles.
+            ui.message(_("No hay enlaces"))
+            return
+        self._nav_link_index += 1
+        if self._nav_link_index >= len(filtered):
+            self._nav_link_index = len(filtered) - 1
+        title, url, _cats = filtered[self._nav_link_index]
+        # Translators: Se anuncia el enlace con su posición. {title} es el título, {url} la URL, {pos} la posición actual, {total} el total.
+        ui.message(_("{title}: {url}, {pos} de {total}").format(title=title, url=url, pos=self._nav_link_index + 1, total=len(filtered)))
+
+    @script(
+        # Translators: Descripción del script para ir al enlace anterior en la navegación virtual.
+        description=_("Ir al enlace anterior"),
+        gesture=None,
+        category=_("Gestor De Enlaces")
+    )
+    def script_previous_link(self, gesture):
+        self._refresh_nav_data()
+        filtered = self._get_filtered_links()
+        if not filtered:
+            # Translators: Se anuncia cuando no hay enlaces disponibles.
+            ui.message(_("No hay enlaces"))
+            return
+        self._nav_link_index -= 1
+        if self._nav_link_index < 0:
+            self._nav_link_index = 0
+        title, url, _cats = filtered[self._nav_link_index]
+        # Translators: Se anuncia el enlace con su posición.
+        ui.message(_("{title}: {url}, {pos} de {total}").format(title=title, url=url, pos=self._nav_link_index + 1, total=len(filtered)))
+
+    @script(
+        # Translators: Descripción del script para abrir el enlace actual en el navegador.
+        description=_("Abrir enlace actual en el navegador"),
+        gesture=None,
+        category=_("Gestor De Enlaces")
+    )
+    def script_open_current_link(self, gesture):
+        self._refresh_nav_data()
+        filtered = self._get_filtered_links()
+        if not filtered or self._nav_link_index < 0 or self._nav_link_index >= len(filtered):
+            # Translators: Se anuncia cuando no hay ningún enlace seleccionado para abrir.
+            ui.message(_("No hay ningún enlace seleccionado"))
+            return
+        title, url, _cats = filtered[self._nav_link_index]
+        ui.message(_("Abriendo {url}").format(url=url))
+        webbrowser.open(url)
+
+    @script(
+        # Translators: Descripción del script para ir a la categoría siguiente en la navegación virtual.
+        description=_("Ir a la categoría siguiente"),
+        gesture=None,
+        category=_("Gestor De Enlaces")
+    )
+    def script_next_category(self, gesture):
+        self._refresh_nav_data()
+        if not self._nav_categories:
+            # Translators: Se anuncia cuando no hay categorías disponibles.
+            ui.message(_("No hay categorías"))
+            return
+        self._nav_cat_index += 1
+        if self._nav_cat_index >= len(self._nav_categories):
+            self._nav_cat_index = len(self._nav_categories) - 1
+        cat_name = self._nav_categories[self._nav_cat_index]
+        count = sum(1 for _t, _u, cats in self._nav_links if cat_name in cats)
+        # Translators: Se anuncia la categoría con su posición y cantidad de enlaces. {name} nombre, {count} enlaces, {pos} posición, {total} total de categorías.
+        ui.message(_("{name}, {count} enlaces, {pos} de {total}").format(name=cat_name, count=count, pos=self._nav_cat_index + 1, total=len(self._nav_categories)))
+        self._nav_link_index = -1
+
+    @script(
+        # Translators: Descripción del script para ir a la categoría anterior en la navegación virtual.
+        description=_("Ir a la categoría anterior"),
+        gesture=None,
+        category=_("Gestor De Enlaces")
+    )
+    def script_previous_category(self, gesture):
+        self._refresh_nav_data()
+        if not self._nav_categories:
+            # Translators: Se anuncia cuando no hay categorías disponibles.
+            ui.message(_("No hay categorías"))
+            return
+        self._nav_cat_index -= 1
+        if self._nav_cat_index < 0:
+            self._nav_cat_index = 0
+        cat_name = self._nav_categories[self._nav_cat_index]
+        count = sum(1 for _t, _u, cats in self._nav_links if cat_name in cats)
+        # Translators: Se anuncia la categoría con su posición y cantidad de enlaces.
+        ui.message(_("{name}, {count} enlaces, {pos} de {total}").format(name=cat_name, count=count, pos=self._nav_cat_index + 1, total=len(self._nav_categories)))
+        self._nav_link_index = -1

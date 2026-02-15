@@ -33,6 +33,15 @@ Estas acciones también se pueden hacer con el menú contextual, pulsando aplica
 
 Para añadir enlaces directamente desde tu navegador al gestor, utiliza el atajo de teclado `Alt + NVDA + K`, 2 veces, o el atajo establecido en caso de cambiarse.
 
+### Navegación virtual de enlaces
+
+El complemento incluye scripts de navegación virtual que permiten recorrer los enlaces y categorías guardados sin abrir la ventana del gestor. Estos scripts no tienen gesto asignado por defecto; para usarlos, asígnalos desde NVDA > Preferencias > Gestos de entrada, en la categoría "Gestor De Enlaces".
+
+Los scripts disponibles son:
+
+- **Enlace siguiente / Enlace anterior**: Navegan por la lista de enlaces guardados, anunciando el título y la URL de cada uno. Si previamente se seleccionó una categoría, la navegación se limita a los enlaces de esa categoría.
+- **Categoría siguiente / Categoría anterior**: Navegan por las categorías disponibles, anunciando el nombre de la categoría y la cantidad de enlaces que contiene. Al cambiar de categoría, la navegación de enlaces se reinicia al inicio.
+
 ## Gestión de los Enlaces
 
 Los enlaces se almacenan en un archivo JSON denominado `links.json` dentro de la carpeta de configuración de NVDA. Si el archivo no existe, se creará automáticamente cuando añadas tu primer enlace.
@@ -78,3 +87,8 @@ Quiero agradecer especialmente a [José Pérez](https://github.com/JosePerezHuan
 Control + c: copiar la URL del enlace enfocado.
 Control + r: reordenar los enlaces alfabéticamente.
 - Corrección de errores
+
+
+###  Versión 1.5
+- Compatible con NVDA 25.1
+- Añadidas categorías para  los enlaces
