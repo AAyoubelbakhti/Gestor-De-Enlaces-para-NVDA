@@ -24,10 +24,10 @@ addon_info = {
 	# Add-on description
 	# Translators: Long description to be shown for this add-on on add-on information from add-ons manager
 	"addon_description": _("""
-Pequeño complemento para gestionar y guardar links de forma rápida
+Pequeño complemento para guardar y gestionar enlaces de forma rápida
 """),
 	# version
-	"addon_version": "2026.2.15",
+	"addon_version": "2026.5.7",
 	# Author(s)
 	"addon_author": "Ayoub <ayoubelbak13@gmail.com>",
 	# URL for the add-on documentation support
